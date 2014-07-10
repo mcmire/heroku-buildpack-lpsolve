@@ -1,2 +1,4 @@
-echo "lpsolve 5.5.0.13"
+#!/usr/bin/env bash
+
+echo "lpsolve 5.5.0.10i"
 exit 0
