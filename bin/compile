@@ -18,7 +18,7 @@ if [[ -f $cache_dir/bin/lp_solve ]]; then
   status "lpsolve $VERSION is already installed"
 else
   status "Downloading and installing lpsolve $VERSION"
-  curl 'http://bashdb.sf.net/lpsolve-5.5.0.10i.tar.bz2' -o - | tar xjf - -C $build_dir/vendor
+  curl 'http://bashdb.sourceforge.net/lpsolve-5.5.0.10i.tar.bz2' -o - | tar xjf - -C $build_dir/vendor
   cd $build_dir/vendor/lpsolve-5.5.0.10i
   ./configure --prefix=$cache_dir && make && make check && make install
   rm -rf $build_dir/vendor
