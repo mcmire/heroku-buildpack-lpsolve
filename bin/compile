@@ -58,14 +58,10 @@ status "Writing profile script"
 mkdir -p $build_dir/.profile.d
 cat <<EOF > $build_dir/.profile.d/lpsolve.sh
 export PATH="$lpsolve_postrelease_vendor_dir/bin:$PATH"
-export LD_LIBRARY_PATH="$lpsolve_postrelease_vendor_dir/lib:\$LD_LIBRARY_PATH"
-export INCLUDE_PATH="$lpsolve_postrelease_vendor_dir/include:\$INCLUDE_PATH"
-export CPATH="\$INCLUDE_PATH"
-export CPPPATH="\$INCLUDE_PATH"
+export LIBRARY_PATH="$lpsolve_postrelease_vendor_dir/lib:$LIBRARY_PATH"
+export C_INCLUDE_PATH="$lpsolve_postrelease_vendor_dir/include:$C_INCLUDE_PATH"
 EOF
 
 export PATH="$lpsolve_prerelease_vendor_dir/bin:$PATH"
-export LD_LIBRARY_PATH="$lpsolve_prerelease_vendor_dir/lib:$LD_LIBRARY_PATH"
-export INCLUDE_PATH="$lpsolve_prerelease_vendor_dir/include:$INCLUDE_PATH"
-export CPATH="$INCLUDE_PATH"
-export CPPPATH="$INCLUDE_PATH"
+export LIBRARY_PATH="$lpsolve_prerelease_vendor_dir/lib:$LIBRARY_PATH"
+export C_INCLUDE_PATH="$lpsolve_prerelease_vendor_dir/include:$C_INCLUDE_PATH"
