@@ -37,7 +37,8 @@ if [[ -f $build_dir/Gemfile ]]; then
   if [[ ! -f $build_dir/.bundle/config ]]; then
     echo "---\n" > $build_dir/.bundle/config
   fi
-  echo "BUNDLE_BUILD__RB-LPSOLVE: --with-lpsolve-dir=$lpsolve_vendor_dir --with-ldflags='-L. -L $lpsolve_vendor_dir/include -L $lpsolve_vendor_dir/lib -fstack-protector -rdynamic -Wl,-export-dynamic'" >> $build_dir/.bundle/config
+  echo "BUNDLE_BUILD__RB-LPSOLVE: --with-lpsolve-dir=$lpsolve_vendor_dir" >> $build_dir/.bundle/config
 
+  cat $build_dir/.bundle/config
   echo "lpsolve vendor dir: $lpsolve_vendor_dir"
 fi
