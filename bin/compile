@@ -16,6 +16,7 @@ status() {
   echo "-----> $*"
 }
 
+mkdir -p $lpsolve_build_dir
 mkdir -p $lpsolve_cache_dir/bin
 mkdir -p $lpsolve_dest_dir
 
