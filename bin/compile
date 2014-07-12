@@ -39,7 +39,7 @@ if [[ -f $build_dir/Gemfile ]]; then
   if [[ ! -f $build_dir/.bundle/config ]]; then
     echo "---\n" > $build_dir/.bundle/config
   fi
-  echo "BUNDLE_BUILD__RB-LPSOLVE: --with-lpsolve-dir=$lpsolve_prerelease_dest_dir" >> $build_dir/.bundle/config
+  echo "BUNDLE_BUILD__RB-LPSOLVE: --with-lpsolve-dir=$lpsolve_prerelease_dest_dir --with-ldflags='-L. -L $lpsolve_prerelease_dest_dir/include -fstack-protector -rdynamic -Wl,-export-dynamic'" >> $build_dir/.bundle/config
 
   echo "lpsolve prerelease dest dir: $lpsolve_prerelease_dest_dir"
 fi
