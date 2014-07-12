@@ -30,10 +30,11 @@ else
   ./configure --prefix=$lpsolve_dest_dir && make && make check && make install
 fi
 
-status "Building runtime environment"
-mkdir -p $build_dir/.profile.d
-echo "export PATH=\"$lpsolve_dest_dir/bin:\$PATH\"" >> $build_dir/.profile.d/lpsolve.sh
-echo "export LDFLAGS=\"-L$lpsolve_dest_dir/lib\"" >> $build_dir/.profile.d/lpsolve.sh
-echo "export CFLAGS=\"-I$lpsolve_dest_dir/include\"" >> $build_dir/.profile.d/lpsolve.sh
-echo "export PKG_LDFLAGS=\$LDFLAGS" >> $build_dir/.profile.d/lpsolve.sh
-echo "export PKG_CFLAGS=\$CFLAGS" >> $build_dir/.profile.d/lpsolve.sh
+if [[ -f $build_dir/Gemfile ]]; then
+  status "Configuring Bundler to find lpsolve"
+  mkdir -p $build_dir/.bundle
+  if [[ ! -f $build_dir/.bundle/config ]]; then
+    echo "---\n" > $build_dir/.bundle/config
+  fi
+  echo "BUNDLE_BUILD__RB-LPSOLVE: --with-lpsolve-lib=$lpsolve_dest_dir/lib --with-lpsolve-include=$lpsolve_dest_dir/include" >> $build_dir/.bundle/config
+fi
