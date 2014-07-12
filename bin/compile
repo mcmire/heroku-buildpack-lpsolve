@@ -51,6 +51,10 @@ if [[ -f $build_dir/Gemfile ]]; then
   echo "BUNDLE_BUILD__RB-LPSOLVE: --with-lpsolve-dir=$lpsolve_prerelease_vendor_dir" >> $build_dir/.bundle/config
 fi
 
+ls $lpsolve_prerelease_vendor_dir/bin
+ls $lpsolve_prerelease_vendor_dir/lib
+ls $lpsolve_prerelease_vendor_dir/include
+
 status "Writing profile script"
 
 mkdir -p $build_dir/.profile.d
