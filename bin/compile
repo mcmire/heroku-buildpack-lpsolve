@@ -2,13 +2,13 @@
 
 set -e
 
-root="$(pwd)"
 build_dir="$1"
 cache_dir="$2"
-#env_dir="$3"
+dest_dir="/app/vendor"
 
-echo "Build dir: $build_dir"
-echo "Cache dir: $cache_dir"
+lpsolve_build_dir="$build_dir/lpsolve"
+lpsolve_cache_dir="$cache_dir/lpsolve"
+lpsolve_dest_dir="$dest_dir/lpsolve"
 
 VERSION="5.5.0.10i"
 
@@ -16,20 +16,21 @@ status() {
   echo "-----> $*"
 }
 
-#mkdir -p $cache_dir/bin
+mkdir -p $lpsolve_cache_dir/bin
+mkdir -p $lpsolve_dest_dir
 
-#if [[ -f $cache_dir/bin/lp_solve ]]; then
-  #status "lpsolve $VERSION is already installed"
-#else
-  #status "Downloading and installing lpsolve $VERSION"
-  #curl 'http://bashdb.sourceforge.net/lpsolve-5.5.0.10i.tar.bz2' -o - | tar xjf - -C "$build_dir/vendor"
-  #cd $build_dir/vendor/lpsolve-5.5.0.10i
-  #./configure --prefix=$cache_dir && make && make check && make install
-  #rm -rf $build_dir/vendor
-#fi
+if [[ -f $lpsolve_cache_dir/bin/lp_solve ]]; then
+  status "Installing lpsolve $VERSION"
+  cp -R $lpsolve_cache_dir/* $lpsolve_dest_dir
+else
+  status "Downloading and installing lpsolve $VERSION"
+  curl 'http://bashdb.sourceforge.net/lpsolve-5.5.0.10i.tar.bz2' -o - | tar xjf - -C $lpsolve_build_dir
+  cd $lpsolve_build_dir/lpsolve-5.5.0.10i
+  ./configure --prefix=$lpsolve_dest_dir && make && make check && make install
+fi
 
-#ln -fs $cache_dir/bin/lp_solve $root/lp_solve
-
-#status "Building runtime environment"
-#mkdir -p $build_dir/.profile.d
-#echo "export PATH=\$PATH:$cache_dir/bin" > $build_dir/.profile.d/lpsolve.sh
+status "Building runtime environment"
+mkdir -p $build_dir/.profile.d
+echo "export PATH=\"$lpsolve_dest_dir/bin:\$PATH\"" >> $build_dir/.profile.d/lpsolve.sh
+echo "export LDFLAGS=\"$lpsolve_dest_dir/lib\"" >> $build_dir/.profile.d/lpsolve.sh
+echo "export CFLAGS=\"$lpsolve_dest_dir/include\"" >> $build_dir/.profile.d/lpsolve.sh
