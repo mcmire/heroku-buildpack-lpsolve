@@ -4,11 +4,13 @@ set -e
 
 build_dir="$1"
 cache_dir="$2"
-vendor_dir="$build_dir/vendor"
+prerelease_vendor_dir="$build_dir/vendor"
+postrelease_vendor_dir="$HOME/vendor"
 
 lpsolve_build_dir="$build_dir/lpsolve"
 lpsolve_cache_dir="$cache_dir/lpsolve"
-lpsolve_vendor_dir="$vendor_dir/lpsolve"
+lpsolve_prerelease_vendor_dir="$prerelease_vendor_dir/lpsolve"
+lpsolve_postrelease_vendor_dir="$postrelease_vendor_dir/lpsolve"
 
 VERSION="5.5.0.10i"
 
@@ -18,27 +20,49 @@ status() {
 
 mkdir -p $lpsolve_build_dir
 mkdir -p $lpsolve_cache_dir/bin
-mkdir -p $lpsolve_vendor_dir
+mkdir -p $lpsolve_prerelease_vendor_dir
 
 if [[ -f $lpsolve_cache_dir/bin/lp_solve ]]; then
   status "Installing lpsolve $VERSION"
-  cp -R $lpsolve_cache_dir/* $lpsolve_vendor_dir
+
+  cp -R $lpsolve_cache_dir/* $lpsolve_prerelease_vendor_dir
 else
   status "Downloading and installing lpsolve $VERSION"
+
   curl 'http://bashdb.sourceforge.net/lpsolve-5.5.0.10i.tar.bz2' -o - | tar xjf - -C $lpsolve_build_dir
+
   cd $lpsolve_build_dir/lpsolve-5.5.0.10i
-  ./configure --prefix=$lpsolve_vendor_dir && make && make check && make install
-  cp -R $lpsolve_vendor_dir/* $lpsolve_cache_dir
+
+  ./configure --prefix=$lpsolve_prerelease_vendor_dir && make && make check && make install
+
+  cp -R $lpsolve_prerelease_vendor_dir/* $lpsolve_cache_dir
 fi
 
 if [[ -f $build_dir/Gemfile ]]; then
   status "Configuring Bundler to find lpsolve"
-  mkdir -p $build_dir/.bundle
-  if [[ ! -f $build_dir/.bundle/config ]]; then
-    echo "---\n" > $build_dir/.bundle/config
-  fi
-  echo "BUNDLE_BUILD__RB-LPSOLVE: --with-lpsolve-dir=$lpsolve_vendor_dir" >> $build_dir/.bundle/config
 
-  cat $build_dir/.bundle/config
-  echo "lpsolve vendor dir: $lpsolve_vendor_dir"
+  mkdir -p $build_dir/.bundle
+
+  if [[ ! -f $build_dir/.bundle/config ]]; then
+    echo "---" > $build_dir/.bundle/config
+  fi
+
+  echo "BUNDLE_BUILD__RB-LPSOLVE: --with-lpsolve-dir=$lpsolve_prerelease_vendor_dir" >> $build_dir/.bundle/config
 fi
+
+status "Writing profile script"
+
+mkdir -p $build_dir/.profile.d
+cat <<EOF > $build_dir/.profile.d/lpsolve.sh
+export PATH="$lpsolve_postrelease_vendor_dir/bin:$PATH"
+export LD_LIBRARY_PATH="$lpsolve_postrelease_vendor_dir/usr/lib:\$LD_LIBRARY_PATH"
+export INCLUDE_PATH="$lpsolve_postrelease_vendor_dir/usr/include:\$INCLUDE_PATH"
+export CPATH="\$INCLUDE_PATH"
+export CPPPATH="\$INCLUDE_PATH"
+EOF
+
+export PATH="$lpsolve_prerelease_vendor_dir/bin:$PATH"
+export LD_LIBRARY_PATH="$lpsolve_prerelease_vendor_dir/usr/lib:\$LD_LIBRARY_PATH"
+export INCLUDE_PATH="$lpsolve_prerelease_vendor_dir/usr/include:\$INCLUDE_PATH"
+export CPATH="\$INCLUDE_PATH"
+export CPPPATH="\$INCLUDE_PATH"
