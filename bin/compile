@@ -48,12 +48,10 @@ if [[ -f $build_dir/Gemfile ]]; then
     echo "---" > $build_dir/.bundle/config
   fi
 
-  echo "BUNDLE_BUILD__RB-LPSOLVE: --with-lpsolve-dir=$lpsolve_prerelease_vendor_dir" >> $build_dir/.bundle/config
+  echo "BUNDLE_BUILD__RB-LPSOLVE: --with-lpsolve-dir=$lpsolve_prerelease_vendor_dir --with-ldflags=\"-L$lpsolve_prerelease_vendor_dir/include -L$lpsolve_prerelease_vendor_dir/lib\"" >> $build_dir/.bundle/config
 fi
 
-ls $lpsolve_prerelease_vendor_dir/bin
-ls $lpsolve_prerelease_vendor_dir/lib
-ls $lpsolve_prerelease_vendor_dir/include
+ls -R $lpsolve_prerelease_vendor_dir
 
 status "Writing profile script"
 
