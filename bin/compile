@@ -4,7 +4,7 @@ set -e
 
 build_dir="$1"
 cache_dir="$2"
-dest_dir="/app/vendor"
+dest_dir="$build_dir/vendor"
 
 lpsolve_build_dir="$build_dir/lpsolve"
 lpsolve_cache_dir="$cache_dir/lpsolve"
@@ -28,6 +28,7 @@ else
   curl 'http://bashdb.sourceforge.net/lpsolve-5.5.0.10i.tar.bz2' -o - | tar xjf - -C $lpsolve_build_dir
   cd $lpsolve_build_dir/lpsolve-5.5.0.10i
   ./configure --prefix=$lpsolve_dest_dir && make && make check && make install
+  cp -R $lpsolve_dest_dir/* $lpsolve_cache_dir
 fi
 
 if [[ -f $build_dir/Gemfile ]]; then
@@ -36,5 +37,5 @@ if [[ -f $build_dir/Gemfile ]]; then
   if [[ ! -f $build_dir/.bundle/config ]]; then
     echo "---\n" > $build_dir/.bundle/config
   fi
-  echo "BUNDLE_BUILD__RB-LPSOLVE: --with-lpsolve-lib=$lpsolve_dest_dir/lib --with-lpsolve-include=$lpsolve_dest_dir/include" >> $build_dir/.bundle/config
+  echo "BUNDLE_BUILD__RB-LPSOLVE: \"--with-lpsolve-lib=$lpsolve_dest_dir/lib --with-lpsolve-include=$lpsolve_dest_dir/include\"" >> $build_dir/.bundle/config
 fi
